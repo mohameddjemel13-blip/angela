@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ec4899">
+    <title>Angela, veux-tu etre mon Valentin ?</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Fond avec coeurs flottants -->
+    <div id="floating-hearts" class="floating-hearts"></div>
+
+    <!-- Contenu principal - Question -->
+    <main id="question-screen" class="main-container">
+        <div class="question-card">
+            <!-- Titre principal -->
+            <h1 class="main-title">
+                Angela
+                <span class="heart-icon">&#10084;</span>
+            </h1>
+            <h2 class="subtitle">veux-tu etre mon Valentin ?</h2>
+            
+            <!-- Message romantique -->
+            <p class="romantic-text">
+                Chaque moment avec toi est magique...
+                <br>
+                <span class="small-text">Dis oui, s'il te plait !</span>
+            </p>
+
+            <!-- Message drole quand NON s'echappe -->
+            <p id="escape-message" class="escape-message"></p>
+
+            <!-- Boutons cote a cote -->
+            <div class="buttons-container">
+                <button id="btn-yes" class="btn btn-yes">
+                    OUI
+                </button>
+                <button id="btn-no" class="btn btn-no">
+                    NON
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Ecran de celebration -->
+    <div id="celebration-screen" class="celebration-screen hidden">
+        <!-- Confettis -->
+        <div id="confetti-container" class="confetti-container"></div>
+        
+        <!-- Coeurs qui montent -->
+        <div id="rising-hearts" class="rising-hearts"></div>
+
+        <!-- Message de celebration -->
+        <div class="celebration-content">
+            <h1 class="celebration-title">
+                <span class="big-heart">&#10084;</span>
+                YEEES
+                <span class="big-heart">&#10084;</span>
+            </h1>
+            <h2 class="celebration-subtitle">JE T'AIME BEAUCOUP</h2>
+            <h2 class="celebration-name">ANGELA !!!</h2>
+            <p class="celebration-signature">- Dali</p>
+            
+            <!-- Visage kawaii -->
+            <div class="kawaii-face">
+                <span class="kawaii-text">(&#9685;&#8255;&#9685;)</span>
+                <span class="kawaii-heart">&#9825;</span>
+            </div>
+
+            <!-- Coeurs orbitants -->
+            <div class="orbiting-hearts">
+                <span class="orbit-heart orbit-1">&#10084;</span>
+                <span class="orbit-heart orbit-2">&#10084;</span>
+                <span class="orbit-heart orbit-3">&#10084;</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
