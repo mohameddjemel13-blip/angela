@@ -10,6 +10,7 @@ const floatingHeartsContainer = document.getElementById('floating-hearts');
 const confettiContainer = document.getElementById('confetti-container');
 const risingHeartsContainer = document.getElementById('rising-hearts');
 
+// Messages droles quand le bouton NON s'echappe
 const escapeMessages = [
     "Hehe, tu ne peux pas m'attraper !",
     "Essaie encore... ou pas !",
@@ -26,10 +27,6 @@ const escapeMessages = [
 let messageIndex = 0;
 let hasEscaped = false;
 let yesScale = 1;
-
-// position contrôlée du bouton NON
-let posX = 0;
-let posY = 0;
 
 /* ============================================
    COEURS FLOTTANTS EN FOND
@@ -51,60 +48,67 @@ function createFloatingHearts() {
 }
 
 /* ============================================
-   POSITION INITIALE FIXE
-   ============================================ */
-function initNoButtonPosition() {
-    const rect = btnNo.getBoundingClientRect();
-    posX = rect.left;
-    posY = rect.top;
-}
-
-/* ============================================
-   BOUTON NON QUI S'ECHAPPE (FIX DEFINITIF)
+   BOUTON NON QUI S'ECHAPPE
+   Deplacement limite a un petit rayon autour
+   de sa position actuelle + clamp dans l'ecran
    ============================================ */
 function moveButton() {
-    const btnWidth = btnNo.offsetWidth;
-    const btnHeight = btnNo.offsetHeight;
-
+    const btnRect = btnNo.getBoundingClientRect();
+    const btnWidth = btnRect.width;
+    const btnHeight = btnRect.height;
+    
     const margin = 20;
     const minX = margin;
     const minY = margin;
     const maxX = window.innerWidth - btnWidth - margin;
     const maxY = window.innerHeight - btnHeight - margin;
-
-    // déplacement court (rayon limité)
+    
+    // Position actuelle du centre du bouton
+    const currentX = btnRect.left;
+    const currentY = btnRect.top;
+    
+    // Deplacement limite : entre 60px et 120px de distance
     const angle = Math.random() * Math.PI * 2;
     const distance = 60 + Math.random() * 60;
-
-    posX += Math.cos(angle) * distance;
-    posY += Math.sin(angle) * distance;
-
-    // clamp STRICT
-    posX = Math.max(minX, Math.min(posX, maxX));
-    posY = Math.max(minY, Math.min(posY, maxY));
-
+    
+    let newX = currentX + Math.cos(angle) * distance;
+    let newY = currentY + Math.sin(angle) * distance;
+    
+    // Clamper strictement dans les limites de l'ecran
+    newX = Math.max(minX, Math.min(newX, maxX));
+    newY = Math.max(minY, Math.min(newY, maxY));
+    
+    // Si le bouton est colle a un bord, le repousser vers le centre
+    if (newX <= minX || newX >= maxX) {
+        newX = minX + (maxX - minX) * (0.3 + Math.random() * 0.4);
+    }
+    if (newY <= minY || newY >= maxY) {
+        newY = minY + (maxY - minY) * (0.3 + Math.random() * 0.4);
+    }
+    
+    // Appliquer la position fixe
     if (!hasEscaped) {
         hasEscaped = true;
         btnNo.classList.add('btn-no-escaped');
-        btnNo.style.position = 'fixed';
     }
-
-    btnNo.style.left = posX + 'px';
-    btnNo.style.top = posY + 'px';
-
-    // grossir le OUI
-    yesScale += 0.4;
+    btnNo.style.position = 'fixed';
+    btnNo.style.left = newX + 'px';
+    btnNo.style.top = newY + 'px';
+    
+    // Faire grossir le bouton OUI a chaque tentative
+    yesScale += 0.08;
     btnYes.style.transform = 'scale(' + yesScale + ')';
-
-    // message
+    
+    // Afficher un message drole
     escapeMessage.textContent = escapeMessages[messageIndex];
     escapeMessage.style.animation = 'none';
     escapeMessage.offsetHeight;
     escapeMessage.style.animation = 'wiggle 0.5s ease-in-out';
-
+    
     messageIndex = (messageIndex + 1) % escapeMessages.length;
 }
 
+// Evenements pour le bouton NON (souris et touch)
 btnNo.addEventListener('mouseenter', moveButton);
 btnNo.addEventListener('touchstart', function(e) {
     e.preventDefault();
@@ -112,7 +116,7 @@ btnNo.addEventListener('touchstart', function(e) {
 });
 
 /* ============================================
-   BOUTON OUI
+   BOUTON OUI - CELEBRATION
    ============================================ */
 btnYes.addEventListener('click', function() {
     questionScreen.style.display = 'none';
@@ -141,11 +145,15 @@ function createConfetti() {
             confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
             confetti.style.animationDelay = (Math.random() * 0.5) + 's';
             
-            if (Math.random() > 0.5) confetti.style.borderRadius = '50%';
+            if (Math.random() > 0.5) {
+                confetti.style.borderRadius = '50%';
+            }
             
             confettiContainer.appendChild(confetti);
             
-            setTimeout(() => confetti.remove(), 5000);
+            setTimeout(() => {
+                confetti.remove();
+            }, 5000);
         }, i * 30);
     }
 }
@@ -169,15 +177,16 @@ function createRisingHearts() {
             
             risingHeartsContainer.appendChild(heart);
             
-            setTimeout(() => heart.remove(), 6000);
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
         }, i * 100);
     }
 }
 
 /* ============================================
-   INIT
+   INITIALISATION
    ============================================ */
 document.addEventListener('DOMContentLoaded', function() {
     createFloatingHearts();
-    initNoButtonPosition(); // IMPORTANT
 });
