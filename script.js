@@ -26,6 +26,7 @@ const escapeMessages = [
 
 let messageIndex = 0;
 let hasEscaped = false;
+let yesScale = 1;
 
 /* ============================================
    COEURS FLOTTANTS EN FOND
@@ -48,38 +49,42 @@ function createFloatingHearts() {
 
 /* ============================================
    BOUTON NON QUI S'ECHAPPE
+   Deplacement limite a un petit rayon autour
+   de sa position actuelle + clamp dans l'ecran
    ============================================ */
 function moveButton() {
     const btnRect = btnNo.getBoundingClientRect();
     const btnWidth = btnRect.width;
     const btnHeight = btnRect.height;
     
-    // Marge de securite depuis les bords de l'ecran
     const margin = 20;
-    
-    // Limites de l'ecran
     const minX = margin;
     const minY = margin;
     const maxX = window.innerWidth - btnWidth - margin;
     const maxY = window.innerHeight - btnHeight - margin;
     
-    // Position actuelle du bouton
+    // Position actuelle du centre du bouton
     const currentX = btnRect.left;
     const currentY = btnRect.top;
     
-    // Rayon maximum de deplacement (150px)
-    const maxRadius = 150;
-    
-    // Generer un angle aleatoire et une distance aleatoire dans le rayon
+    // Deplacement limite : entre 60px et 120px de distance
     const angle = Math.random() * Math.PI * 2;
-    const distance = 80 + Math.random() * (maxRadius - 80); // entre 80 et 150px
+    const distance = 60 + Math.random() * 60;
     
     let newX = currentX + Math.cos(angle) * distance;
     let newY = currentY + Math.sin(angle) * distance;
     
-    // Clamper pour rester dans l'ecran
+    // Clamper strictement dans les limites de l'ecran
     newX = Math.max(minX, Math.min(newX, maxX));
     newY = Math.max(minY, Math.min(newY, maxY));
+    
+    // Si le bouton est colle a un bord, le repousser vers le centre
+    if (newX <= minX || newX >= maxX) {
+        newX = minX + (maxX - minX) * (0.3 + Math.random() * 0.4);
+    }
+    if (newY <= minY || newY >= maxY) {
+        newY = minY + (maxY - minY) * (0.3 + Math.random() * 0.4);
+    }
     
     // Appliquer la position fixe
     if (!hasEscaped) {
@@ -90,10 +95,14 @@ function moveButton() {
     btnNo.style.left = newX + 'px';
     btnNo.style.top = newY + 'px';
     
+    // Faire grossir le bouton OUI a chaque tentative
+    yesScale += 0.4;
+    btnYes.style.transform = 'scale(' + yesScale + ')';
+    
     // Afficher un message drole
     escapeMessage.textContent = escapeMessages[messageIndex];
     escapeMessage.style.animation = 'none';
-    escapeMessage.offsetHeight; // Force reflow
+    escapeMessage.offsetHeight;
     escapeMessage.style.animation = 'wiggle 0.5s ease-in-out';
     
     messageIndex = (messageIndex + 1) % escapeMessages.length;
@@ -110,18 +119,14 @@ btnNo.addEventListener('touchstart', function(e) {
    BOUTON OUI - CELEBRATION
    ============================================ */
 btnYes.addEventListener('click', function() {
-    // Cacher l'ecran de question
     questionScreen.style.display = 'none';
     btnNo.style.display = 'none';
     
-    // Afficher l'ecran de celebration
     celebrationScreen.classList.remove('hidden');
     
-    // Lancer les animations
     createConfetti();
     createRisingHearts();
     
-    // Continuer a creer des coeurs
     setInterval(createRisingHearts, 2000);
 });
 
@@ -140,14 +145,12 @@ function createConfetti() {
             confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
             confetti.style.animationDelay = (Math.random() * 0.5) + 's';
             
-            // Forme aleatoire
             if (Math.random() > 0.5) {
                 confetti.style.borderRadius = '50%';
             }
             
             confettiContainer.appendChild(confetti);
             
-            // Supprimer apres l'animation
             setTimeout(() => {
                 confetti.remove();
             }, 5000);
@@ -174,7 +177,6 @@ function createRisingHearts() {
             
             risingHeartsContainer.appendChild(heart);
             
-            // Supprimer apres l'animation
             setTimeout(() => {
                 heart.remove();
             }, 6000);
