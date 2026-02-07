@@ -26,8 +26,6 @@ const escapeMessages = [
 
 let messageIndex = 0;
 let hasEscaped = false;
-let yesScale = 1;
-let escapeLevel = 0;
 
 /* ============================================
 COEURS FLOTTANTS EN FOND
@@ -52,7 +50,7 @@ for (let i = 0; i < 15; i++) {
 }
 
 /* ============================================
-BOUTON NON QUI S'ECHAPPE
+BOUTON NON QUI S'ECHAPPE (CORRIGÉ)
 ============================================ */
 function moveButton() {
 const btnRect = btnNo.getBoundingClientRect();
@@ -60,46 +58,15 @@ const btnWidth = btnRect.width;
 const btnHeight = btnRect.height;
 
 ```
-const margin = 20;
-const minX = margin;
-const minY = margin;
+// Marge de securite pour ne jamais toucher les bords
+const margin = 40;
+
+// Position totalement aléatoire mais toujours dans l'écran
 const maxX = window.innerWidth - btnWidth - margin;
 const maxY = window.innerHeight - btnHeight - margin;
 
-const currentX = btnRect.left;
-const currentY = btnRect.top;
-
-// Distance progressive (petit au debut)
-escapeLevel++;
-
-let minDist = 10;
-let maxDist = 25;
-
-if (escapeLevel > 4) {
-    minDist = 25;
-    maxDist = 60;
-}
-
-if (escapeLevel > 10) {
-    minDist = 40;
-    maxDist = 90;
-}
-
-const angle = Math.random() * Math.PI * 2;
-const distance = minDist + Math.random() * (maxDist - minDist);
-
-let newX = currentX + Math.cos(angle) * distance;
-let newY = currentY + Math.sin(angle) * distance;
-
-newX = Math.max(minX, Math.min(newX, maxX));
-newY = Math.max(minY, Math.min(newY, maxY));
-
-if (newX <= minX || newX >= maxX) {
-    newX = minX + (maxX - minX) * (0.3 + Math.random() * 0.4);
-}
-if (newY <= minY || newY >= maxY) {
-    newY = minY + (maxY - minY) * (0.3 + Math.random() * 0.4);
-}
+const newX = margin + Math.random() * maxX;
+const newY = margin + Math.random() * maxY;
 
 if (!hasEscaped) {
     hasEscaped = true;
@@ -110,14 +77,10 @@ btnNo.style.position = 'fixed';
 btnNo.style.left = newX + 'px';
 btnNo.style.top = newY + 'px';
 
-// Faire grossir le bouton OUI
-yesScale += 0.4;
-btnYes.style.transform = 'scale(' + yesScale + ')';
-
-// Message drole
+// Afficher un message drole
 escapeMessage.textContent = escapeMessages[messageIndex];
 escapeMessage.style.animation = 'none';
-escapeMessage.offsetHeight;
+escapeMessage.offsetHeight; // Force reflow
 escapeMessage.style.animation = 'wiggle 0.5s ease-in-out';
 
 messageIndex = (messageIndex + 1) % escapeMessages.length;
@@ -125,9 +88,8 @@ messageIndex = (messageIndex + 1) % escapeMessages.length;
 
 }
 
-// Evenements (fix pour qu'il continue a bouger)
+// Evenements pour le bouton NON (souris et touch)
 btnNo.addEventListener('mouseenter', moveButton);
-btnNo.addEventListener('mouseover', moveButton);
 btnNo.addEventListener('touchstart', function(e) {
 e.preventDefault();
 moveButton();
@@ -137,15 +99,19 @@ moveButton();
 BOUTON OUI - CELEBRATION
 ============================================ */
 btnYes.addEventListener('click', function() {
+// Cacher l'ecran de question
 questionScreen.style.display = 'none';
 btnNo.style.display = 'none';
 
 ```
+// Afficher l'ecran de celebration
 celebrationScreen.classList.remove('hidden');
 
+// Lancer les animations
 createConfetti();
 createRisingHearts();
 
+// Continuer a creer des coeurs
 setInterval(createRisingHearts, 2000);
 ```
 
