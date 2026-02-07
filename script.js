@@ -27,7 +27,7 @@ const escapeMessages = [
 let messageIndex = 0;
 let hasEscaped = false;
 let yesScale = 1;
-let escapeLevel = 0;   // <-- AJOUT
+let escapeLevel = 0;
 
 /* ============================================
 COEURS FLOTTANTS EN FOND
@@ -53,8 +53,6 @@ for (let i = 0; i < 15; i++) {
 
 /* ============================================
 BOUTON NON QUI S'ECHAPPE
-Deplacement limite a un petit rayon autour
-de sa position actuelle + clamp dans l'ecran
 ============================================ */
 function moveButton() {
 const btnRect = btnNo.getBoundingClientRect();
@@ -68,13 +66,10 @@ const minY = margin;
 const maxX = window.innerWidth - btnWidth - margin;
 const maxY = window.innerHeight - btnHeight - margin;
 
-// Position actuelle du centre du bouton
 const currentX = btnRect.left;
 const currentY = btnRect.top;
 
-// Deplacement progressif (petit au debut, plus grand ensuite)
-const angle = Math.random() * Math.PI * 2;
-
+// Distance progressive (petit au debut)
 escapeLevel++;
 
 let minDist = 10;
@@ -90,16 +85,15 @@ if (escapeLevel > 10) {
     maxDist = 90;
 }
 
+const angle = Math.random() * Math.PI * 2;
 const distance = minDist + Math.random() * (maxDist - minDist);
 
 let newX = currentX + Math.cos(angle) * distance;
 let newY = currentY + Math.sin(angle) * distance;
 
-// Clamper strictement dans les limites de l'ecran
 newX = Math.max(minX, Math.min(newX, maxX));
 newY = Math.max(minY, Math.min(newY, maxY));
 
-// Si le bouton est colle a un bord, le repousser vers le centre
 if (newX <= minX || newX >= maxX) {
     newX = minX + (maxX - minX) * (0.3 + Math.random() * 0.4);
 }
@@ -107,20 +101,20 @@ if (newY <= minY || newY >= maxY) {
     newY = minY + (maxY - minY) * (0.3 + Math.random() * 0.4);
 }
 
-// Appliquer la position fixe
 if (!hasEscaped) {
     hasEscaped = true;
     btnNo.classList.add('btn-no-escaped');
 }
+
 btnNo.style.position = 'fixed';
 btnNo.style.left = newX + 'px';
 btnNo.style.top = newY + 'px';
 
-// Faire grossir le bouton OUI a chaque tentative
+// Faire grossir le bouton OUI
 yesScale += 0.4;
 btnYes.style.transform = 'scale(' + yesScale + ')';
 
-// Afficher un message drole
+// Message drole
 escapeMessage.textContent = escapeMessages[messageIndex];
 escapeMessage.style.animation = 'none';
 escapeMessage.offsetHeight;
@@ -131,8 +125,9 @@ messageIndex = (messageIndex + 1) % escapeMessages.length;
 
 }
 
-// Evenements pour le bouton NON (souris et touch)
+// Evenements (fix pour qu'il continue a bouger)
 btnNo.addEventListener('mouseenter', moveButton);
+btnNo.addEventListener('mouseover', moveButton);
 btnNo.addEventListener('touchstart', function(e) {
 e.preventDefault();
 moveButton();
