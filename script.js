@@ -66,7 +66,7 @@ function moveButton() {
     const btnWidth = btnNo.offsetWidth;
     const btnHeight = btnNo.offsetHeight;
 
-    const margin = 20;
+    const margin = 10;
     const minX = margin;
     const minY = margin;
     const maxX = window.innerWidth - btnWidth - margin;
@@ -74,7 +74,7 @@ function moveButton() {
 
     // déplacement court (rayon limité)
     const angle = Math.random() * Math.PI * 2;
-    const distance = 10 + Math.random() * 10;
+    const distance = 60 + Math.random() * 60;
 
     posX += Math.cos(angle) * distance;
     posY += Math.sin(angle) * distance;
