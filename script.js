@@ -74,7 +74,7 @@ function moveButton() {
 
     // déplacement court (rayon limité)
     const angle = Math.random() * Math.PI * 2;
-    const distance = 60 + Math.random() * 60;
+    const distance = 75 + Math.random() * 75;
 
     posX += Math.cos(angle) * distance;
     posY += Math.sin(angle) * distance;
