@@ -80,7 +80,7 @@ function moveButton() {
 
     // PREMIER SAUT plus petit, ensuite normal
     const distance = firstMove
-        ? 35 + Math.random() * 25   // premier saut doux (35–60px)
+        ? 15 + Math.random() * 25   // premier saut doux (35–60px)
         : 75 + Math.random() * 75;  // sauts suivants inchangés
 
     firstMove = false;
