@@ -31,6 +31,9 @@ let yesScale = 1;
 let posX = 0;
 let posY = 0;
 
+// NOUVEAU : pour réduire seulement le premier saut
+let firstMove = true;
+
 /* ============================================
    COEURS FLOTTANTS EN FOND
    ============================================ */
@@ -72,9 +75,15 @@ function moveButton() {
     const maxX = window.innerWidth - btnWidth - margin;
     const maxY = window.innerHeight - btnHeight - margin;
 
-    // déplacement court (rayon limité)
+    // angle aléatoire
     const angle = Math.random() * Math.PI * 2;
-    const distance = 75 + Math.random() * 75;
+
+    // PREMIER SAUT plus petit, ensuite normal
+    const distance = firstMove
+        ? 35 + Math.random() * 25   // premier saut doux (35–60px)
+        : 75 + Math.random() * 75;  // sauts suivants inchangés
+
+    firstMove = false;
 
     posX += Math.cos(angle) * distance;
     posY += Math.sin(angle) * distance;
@@ -179,5 +188,5 @@ function createRisingHearts() {
    ============================================ */
 document.addEventListener('DOMContentLoaded', function() {
     createFloatingHearts();
-    initNoButtonPosition(); // IMPORTANT
+    initNoButtonPosition();
 });
